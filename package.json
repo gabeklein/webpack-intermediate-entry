@@ -13,8 +13,8 @@
     "access": "public"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
+    "@types/node": "^10.12.18",
+    "typescript": "^3.2.2"
   },
   "dependencies": {
     "webpack": "^4.17.1",

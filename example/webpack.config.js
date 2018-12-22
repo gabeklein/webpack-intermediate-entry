@@ -13,7 +13,7 @@ module.exports = {
         path: path.resolve(__dirname, "dist")
     },
     plugins: [
-        new InitializeEntryPlugin({ initFile: "./init.js" })
+        new InitializeEntryPlugin({ insert: "./init.js" })
     ],
     devtool: false
 }
