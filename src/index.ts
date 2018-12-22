@@ -17,7 +17,7 @@ module.exports = class InitializeEntryPlugin {
     definedFiles: BunchOf<string>;
     importPassTo = {} as BunchOf<string>;
     test?: string;
-    actualEntries = {} as BunchOf<any>;
+    entryPoints = {} as BunchOf<string>;
 
     constructor(options: any){
         const { insert } = options;
@@ -50,6 +50,7 @@ module.exports = class InitializeEntryPlugin {
     }
 
     apply(compiler: any) {
+        
         // after entry and context options are loaded into webpack
         compiler.hooks.entryOption.tap(PLUGINID, 
             (context: string, entries: any) => {
@@ -63,13 +64,14 @@ module.exports = class InitializeEntryPlugin {
                 for(const x in entries){
                     const e = entries[x];
                     
-                    this.actualEntries[x] = 
+                    this.entryPoints[x] = 
                         typeof e == "string" ? e :
                         Array.isArray(e) ?
                             e[e.length - 1] :
                             false;
                 }
-            })
+            }
+        )
 
         //gain access to module construction
         compiler.hooks.normalModuleFactory.tap(PLUGINID, (compilation: any) => {
@@ -88,18 +90,19 @@ module.exports = class InitializeEntryPlugin {
                         ? loc.slice(0, loc.indexOf(":"))
                         : loc.name;
 
-                    const replacableEntry = this.actualEntries[name];
+                    const replacableEntry = this.entryPoints[name];
                     
                     if(result.request == replacableEntry){
-                        const initModule = replacableEntry.replace(/\.js$/, ".init.js");
-                        const contents = this.definedFiles[this.initEntries[0]]!;
+                        const initModule = this.initEntries[0];
 
                         //create virtual entry replacement
+
                         BundleSyntheticFile(
                             compiler.inputFileSystem, 
                             path.join(this.context!, initModule), 
-                            contents
+                            this.definedFiles[this.initEntries[0]]!
                         );
+
                         //assign file as new entry for bundle
                         result.request = initModule;
                         //register virtual module's real-life counterpart 
@@ -109,6 +112,7 @@ module.exports = class InitializeEntryPlugin {
 
                 else if(result.request == "__webpack_entry__"){
                     const requestedBy = result.contextInfo.issuer;
+                    // const entryFor = result.dependencies[0].originModule.reasons[0].dependency.loc.name;
                     const targetEntry = this.importPassTo["./" + path.relative(this.context!, requestedBy)];
 
                     if(!targetEntry)
