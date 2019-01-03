@@ -63,12 +63,11 @@ module.exports = class InitializeEntryPlugin {
                     
                 for(const x in entries){
                     const e = entries[x];
-                    
+
                     this.entryPoints[x] = 
                         typeof e == "string" ? e :
-                        Array.isArray(e) ?
-                            e[e.length - 1] :
-                            false;
+                        Array.isArray(e) ? e[e.length - 1] :
+                        false;
                 }
             }
         )
@@ -102,23 +101,23 @@ module.exports = class InitializeEntryPlugin {
                             path.join(this.context!, initModule), 
                             this.definedFiles[this.initEntries[0]]!
                         );
-
+                        
                         //assign file as new entry for bundle
                         result.request = initModule;
                         //register virtual module's real-life counterpart 
-                        this.importPassTo[initModule] = replacableEntry;
+                        this.importPassTo[initModule] = path.resolve(this.context!, replacableEntry);
                     }
                 }
 
                 else if(result.request == "__webpack_entry__"){
                     const requestedBy = result.contextInfo.issuer;
                     // const entryFor = result.dependencies[0].originModule.reasons[0].dependency.loc.name;
-                    const targetEntry = this.importPassTo["./" + path.relative(this.context!, requestedBy)];
+                    const targetEntry = this.importPassTo[requestedBy];
 
                     if(!targetEntry)
                         throw new Error(`Module '__webpack_entry__' was requested by ${requestedBy} but that module is not an initializer!`)
 
-                    result.request = path.join(this.context!, targetEntry);
+                    result.request = targetEntry;
                 }
             
                 return result;
