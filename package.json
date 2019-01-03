@@ -1,11 +1,11 @@
 {
   "name": "webpack-initialize-entry",
-  "version": "0.1.0",
+  "version": "0.2.2",
   "description": "Specifiy an initializer module to replace and import each entry",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel ./src --out-dir ./lib",
-    "dev": "babel ./src --out-dir ./lib --source-maps --watch",
+    "build": "tsc",
+    "dev": "tsc --watch",
     "prepare": "npm run build"
   },
   "license": "MIT",
@@ -19,5 +19,8 @@
   "dependencies": {
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
-  }
+  },
+  "files": [
+    "lib/"
+  ]
 }
