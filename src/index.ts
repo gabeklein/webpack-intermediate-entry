@@ -1,7 +1,6 @@
 import path from "path";
 import fs from "fs";
-
-import BundleSyntheticFile from "./stats";
+import { appendToFilesystem } from "./stats";
 
 const PLUGINID = "InitializeEntryPlugin";
 
@@ -16,8 +15,8 @@ module.exports = class InitializeEntryPlugin {
     initEntries: string[];
     definedFiles: BunchOf<string>;
     importPassTo = {} as BunchOf<string>;
-    test?: string;
     entryPoints = {} as BunchOf<string>;
+    test?: string;
 
     constructor(options: any){
         const { insert } = options;
@@ -92,14 +91,15 @@ module.exports = class InitializeEntryPlugin {
                     const replacableEntry = this.entryPoints[name];
                     
                     if(result.request == replacableEntry){
-                        const initModule = this.initEntries[0];
+                        const initModule = replacableEntry.replace(/\.js$/, ".intermediate.js");
+                        const initPath = path.resolve(this.context!, initModule);
+                        const initContent = this.definedFiles[this.initEntries[0]]!;
 
                         //create virtual entry replacement
-
-                        BundleSyntheticFile(
+                        appendToFilesystem(
                             compiler.inputFileSystem, 
-                            path.join(this.context!, initModule), 
-                            this.definedFiles[this.initEntries[0]]!
+                            initPath, 
+                            initContent
                         );
                         
                         //assign file as new entry for bundle
@@ -111,7 +111,6 @@ module.exports = class InitializeEntryPlugin {
 
                 else if(result.request == "__webpack_entry__"){
                     const requestedBy = result.contextInfo.issuer;
-                    // const entryFor = result.dependencies[0].originModule.reasons[0].dependency.loc.name;
                     const targetEntry = this.importPassTo[requestedBy];
 
                     if(!targetEntry)

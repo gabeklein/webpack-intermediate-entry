@@ -1,22 +1,27 @@
 import constants from "constants"
 
-export default function populateFakeFile(
+export function appendToFilesystem(
     fs: any, 
     modulePath: string, 
     contents: string){
 
-    if(fs._readFileStorage.data instanceof Map){
-        if(fs._readFileStorage.data.has(modulePath)) return;
-        fs._readFileStorage.data.set(modulePath, [null, contents]);
-    }
+    const readFileStorageIsMap = fs._readFileStorage.data instanceof Map;
 
-    const stats = new VirtualStats(contents);
+    if (readFileStorageIsMap && fs._readFileStorage.data.has(modulePath))
+        return;
 
-    if(fs._statStorage.data instanceof Map) 
-        fs._statStorage.data.set(modulePath, [null, stats]);
+    if (fs._statStorage.data instanceof Map)
+        fs._statStorage.data.set(modulePath, [
+            null, new StatsForVirtualFile(contents)
+        ]);
+
+    if (readFileStorageIsMap) 
+        fs._readFileStorage.data.set(modulePath, [
+            null, contents
+        ]);
 }
 
-class VirtualStats {
+class StatsForVirtualFile {
 
     dev = 8675309
     nlink = 1
@@ -48,31 +53,7 @@ class VirtualStats {
         return (this.mode & constants.S_IFMT) === property;
     }
 
-    isDirectory() {
-        return this._checkModeProperty(constants.S_IFDIR);
-    }
-
     isFile() {
         return this._checkModeProperty(constants.S_IFREG);
-    }
-
-    isBlockDevice() {
-        return this._checkModeProperty(constants.S_IFBLK);
-    }
-
-    isCharacterDevice() {
-        return this._checkModeProperty(constants.S_IFCHR);
-    }
-
-    isSymbolicLink() {
-        return this._checkModeProperty(constants.S_IFLNK);
-    }
-
-    isFIFO() {
-        return this._checkModeProperty(constants.S_IFIFO);
-    }
-
-    isSocket() {
-        return this._checkModeProperty(constants.S_IFSOCK);
     }
 }
