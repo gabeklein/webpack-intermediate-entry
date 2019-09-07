@@ -9,7 +9,7 @@ A webpack plugin allowing you to specify a "middleware" file which takes the pla
 
 ## Use Case
 
-Similarly to a [Next.js](https://nextjs.org) stack, you have a folder containing a number of modules. Each of those export a default component, which supplies the "page" for a named route, instanciated with react. This plugin gives that same functionality, but for those who wish to build static page-bundles, for a CDN or such-like, in conjunction with [HTMLWebpackPlugin](https://webpack.js.org/plugins/html-webpack-plugin/), thus bypassing SSR.
+Similarly to a React [Next.js](https://nextjs.org) stack, you might have a folder containing a number of modules. Each of those export a default component, which supplies the "page" for a named route. This plugin allows a similar workflow, but to those who prefer shipping static page-bundles using [HTMLWebpackPlugin](https://webpack.js.org/plugins/html-webpack-plugin/), thus bypassing SSR.
 
 <br />
 <br />
