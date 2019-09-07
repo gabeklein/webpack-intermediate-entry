@@ -111,7 +111,7 @@ module.exports = class InitializeEntryPlugin {
 
                 else if(result.request == "__webpack_entry__"){
                     const requestedBy = result.contextInfo.issuer;
-                    const targetEntry = this.importPassTo[requestedBy];
+                    const targetEntry = this.importPassTo['./' + path.relative(this.context!, requestedBy)];
 
                     if(!targetEntry)
                         throw new Error(`Module '__webpack_entry__' was requested by ${requestedBy} but that module is not an initializer!`)
