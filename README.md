@@ -2,7 +2,7 @@
 <br />
 <br />
 
-A webpack plugin allowing you to specify a "middleware" file which takes the place of your entries. With it you can programatically bundle any number of entry modules, all of which should share a common bootstraping logic. For each entry file, the common module will be loaded instead. Within that common module, importing `__webpack_entry__` will resolve to the original entry file respective to each _instance_ of common.
+A webpack plugin allowing you to specify a "middleware" file which takes the place of your entries. With it you can programatically bundle any number of entry modules, all of which should share a common bootstraping logic. For each entry file, the common module will be loaded instead. Within that common module, importing `__webpack_entry__` will resolve to the original entry file respective to each _instance_ of the common, inserted module.
 
 <br />
 <br />
