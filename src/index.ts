@@ -103,9 +103,9 @@ module.exports = class InitializeEntryPlugin {
                         );
                         
                         //assign file as new entry for bundle
-                        result.request = initModule;
+                        result.request = initPath;
                         //register virtual module's real-life counterpart 
-                        this.importPassTo[initModule] = path.resolve(this.context!, replacableEntry);
+                        this.importPassTo[initPath] = path.resolve(this.context!, replacableEntry);
                     }
                 }
 
